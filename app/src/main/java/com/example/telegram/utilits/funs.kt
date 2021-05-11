@@ -29,7 +29,9 @@ fun AppCompatActivity.replaceFragment(fragment: Fragment, addStack: Boolean = tr
 }
 
 fun Fragment.replaceFragment(fragment: Fragment) {
+    println("replace fragment")
     this.fragmentManager?.beginTransaction()
         ?.addToBackStack(null)
         ?.replace(R.id.dataContainer, fragment)?.commit()
 }
+

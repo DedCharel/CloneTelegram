@@ -1,5 +1,6 @@
 package com.example.telegram.ui.fragments
 
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.telegram.MainActivity
 import com.example.telegram.R
@@ -34,10 +35,12 @@ class EnterPhoneNumberFragment : Fragment(R.layout.fragment_enter_phone_number) 
             }
 
             override fun onVerificationFailed(p0: FirebaseException) {
-               showToast(p0.message.toString())
+            //  showToast(p0.message.toString())
+            println("!!!!"+mPhoneNumber+"!!!!!" + p0.message.toString())
             }
 
             override fun onCodeSent(id: String, token: PhoneAuthProvider.ForceResendingToken) {
+                println("code sent id = $id")
                 replaceFragment(EnterCodeFragment(mPhoneNumber, id))
             }
         }
