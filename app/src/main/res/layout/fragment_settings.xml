@@ -21,7 +21,7 @@
             android:layout_height="@dimen/settings_user_photo_height"
             android:src="@drawable/default_photo"
             app:civ_circle_background_color="@color/colorAccent"
-            android:layout_marginStart="@dimen/horizontal_margin"
+            android:layout_marginStart="@dimen/app_margin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
@@ -31,8 +31,8 @@
             android:layout_height="wrap_content"
             android:textColor="@color/colorAccent"
             tools:text="@string/settings_default_username"
-            android:layout_marginTop="@dimen/vertical_margin"
-            android:layout_marginStart="@dimen/horizontal_margin"
+            android:layout_marginTop="@dimen/app_small_margin"
+            android:layout_marginStart="@dimen/app_margin"
             android:textSize="@dimen/normalText"
             app:layout_constraintStart_toEndOf="@id/settings_user_photo"
             app:layout_constraintEnd_toEndOf="parent"
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/colorAccentDark"
             tools:text="@string/settings_default_status"
-            android:layout_marginStart="@dimen/horizontal_margin"
+            android:layout_marginStart="@dimen/app_margin"
             android:textSize="@dimen/smallText"
             app:layout_constraintStart_toEndOf="@id/settings_user_photo"
             app:layout_constraintEnd_toEndOf="parent"
@@ -59,7 +59,7 @@
         android:textStyle="bold"
         android:text="@string/settings_text_account"
         android:layout_marginTop="@dimen/vertical_large_margin"
-        android:layout_marginStart="@dimen/horizontal_margin"
+        android:layout_marginStart="@dimen/app_margin"
         app:layout_constraintTop_toBottomOf="@id/settings_header_block"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -150,7 +150,7 @@
         android:src="@drawable/ic_camera"
         app:civ_border_color="@color/colorGray"
         app:layout_constraintBottom_toBottomOf="@+id/settings_header_block"
-        android:layout_marginEnd="@dimen/horizontal_margin"
+        android:layout_marginEnd="@dimen/app_margin"
         app:civ_circle_background_color="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
         app:civ_border_width="1dp"
