@@ -4,11 +4,8 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.View
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.telegram.R
-import com.example.telegram.models.User
 import com.example.telegram.ui.fragments.ContactsFragment
 import com.example.telegram.ui.fragments.SettingsFragment
 import com.example.telegram.utilits.APP_ACTIVITY
