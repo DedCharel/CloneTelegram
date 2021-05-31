@@ -1,9 +1,10 @@
-package com.example.telegram.ui.fragments
+package com.example.telegram.ui.fragments.single_chat
 
 import android.view.View
 import com.example.telegram.R
 import com.example.telegram.models.CommonModel
 import com.example.telegram.models.UserModel
+import com.example.telegram.ui.fragments.BaseFragment
 import com.example.telegram.utilits.*
 import com.google.firebase.database.DatabaseReference
 import kotlinx.android.synthetic.main.activity_main.view.*
