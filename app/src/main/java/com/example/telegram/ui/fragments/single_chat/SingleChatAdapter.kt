@@ -5,10 +5,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.telegram.R
 import com.example.telegram.models.CommonModel
 import com.example.telegram.utilits.CURRENT_UID
+import com.example.telegram.utilits.DiffUtilCalback
 import com.example.telegram.utilits.asTime
 import kotlinx.android.synthetic.main.message_item.view.*
 import java.text.SimpleDateFormat
@@ -17,11 +19,12 @@ import java.util.*
 class SingleChatAdapter:RecyclerView.Adapter<SingleChatAdapter.SingleChatHolder>() {
 
     private var mListMessageCash = emptyList<CommonModel>()
+    private lateinit var mDiffResult:DiffUtil.DiffResult
 
     class SingleChatHolder(view: View):RecyclerView.ViewHolder(view){
         val blocUserMessage: ConstraintLayout = view.bloc_user_message
         val chatUserMessage:TextView = view.chat_user_message
-        val chatUserMessageTime:TextView =view.chat_received_message_time
+        val chatUserMessageTime:TextView =view.chat_user_message_time
 
         val blocReceivedMessage: ConstraintLayout = view.bloc_received_message
         val chatReceivedMessage:TextView = view.chat_received_message
@@ -52,8 +55,18 @@ class SingleChatAdapter:RecyclerView.Adapter<SingleChatAdapter.SingleChatHolder>
     override fun getItemCount(): Int = mListMessageCash.size
 
     fun setList(list: List<CommonModel>){
-        mListMessageCash = list
-        notifyDataSetChanged()
+
+
+        //notifyDataSetChanged()
+    }
+
+    fun addItem(item:CommonModel){
+        val newList = mutableListOf<CommonModel>()
+        newList.addAll(mListMessageCash)
+        newList.add(item)
+        mDiffResult = DiffUtil.calculateDiff(DiffUtilCalback(mListMessageCash,newList))
+        mDiffResult.dispatchUpdatesTo(this)
+        mListMessageCash = newList
     }
 }
 
