@@ -18,7 +18,7 @@ import java.util.*
 
 class SingleChatAdapter:RecyclerView.Adapter<SingleChatAdapter.SingleChatHolder>() {
 
-    private var mListMessageCash = emptyList<CommonModel>()
+    private var mListMessageCash = mutableListOf<CommonModel>()
     private lateinit var mDiffResult:DiffUtil.DiffResult
 
     class SingleChatHolder(view: View):RecyclerView.ViewHolder(view){
@@ -54,20 +54,26 @@ class SingleChatAdapter:RecyclerView.Adapter<SingleChatAdapter.SingleChatHolder>
 
     override fun getItemCount(): Int = mListMessageCash.size
 
-    fun setList(list: List<CommonModel>){
 
 
-        //notifyDataSetChanged()
-    }
+    fun addItem(item:CommonModel,
+                toBottom:Boolean,
+                onSuccess:() ->Unit){
+        if (toBottom){
+            if (!mListMessageCash.contains(item)){
+                mListMessageCash.add(item)
+                notifyItemChanged(mListMessageCash.size)
+            } else{
+                if (!mListMessageCash.contains(item)){
+                    mListMessageCash.add(item)
+                    mListMessageCash.sortBy { it.timeStamp.toString() }
+                    notifyItemChanged(0)
+                }
 
-    fun addItem(item:CommonModel){
-        val newList = mutableListOf<CommonModel>()
-        newList.addAll(mListMessageCash)
-        if (!newList.contains(item)) newList.add(item)
-        newList.sortBy { it.timeStamp.toString() }
-        mDiffResult = DiffUtil.calculateDiff(DiffUtilCalback(mListMessageCash,newList))
-        mDiffResult.dispatchUpdatesTo(this)
-        mListMessageCash = newList
+            }
+        }
+        onSuccess()
+
     }
 }
 
