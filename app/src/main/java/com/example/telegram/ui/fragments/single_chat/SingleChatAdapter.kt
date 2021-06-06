@@ -10,15 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.telegram.R
 import com.example.telegram.models.CommonModel
 import com.example.telegram.utilits.CURRENT_UID
-import com.example.telegram.utilits.DiffUtilCalback
 import com.example.telegram.utilits.asTime
 import kotlinx.android.synthetic.main.message_item.view.*
-import java.text.SimpleDateFormat
-import java.util.*
 
 class SingleChatAdapter:RecyclerView.Adapter<SingleChatAdapter.SingleChatHolder>() {
 
-    private var mListMessageCash = mutableListOf<CommonModel>()
+    private var mListMessagesCache = mutableListOf<CommonModel>()
     private lateinit var mDiffResult:DiffUtil.DiffResult
 
     class SingleChatHolder(view: View):RecyclerView.ViewHolder(view){
@@ -37,44 +34,43 @@ class SingleChatAdapter:RecyclerView.Adapter<SingleChatAdapter.SingleChatHolder>
     }
 
     override fun onBindViewHolder(holder: SingleChatHolder, position: Int) {
-        if (mListMessageCash[position].from == CURRENT_UID){
+        if (mListMessagesCache[position].from == CURRENT_UID){
             holder.blocUserMessage.visibility = View.VISIBLE
             holder.blocReceivedMessage.visibility = View.GONE
-            holder.chatUserMessage.text = mListMessageCash[position].text
+            holder.chatUserMessage.text = mListMessagesCache[position].text
             holder.chatUserMessageTime.text =
-                mListMessageCash[position].timeStamp.toString().asTime()
+                mListMessagesCache[position].timeStamp.toString().asTime()
         } else{
             holder.blocUserMessage.visibility = View.GONE
             holder.blocReceivedMessage.visibility = View.VISIBLE
-            holder.chatReceivedMessage.text = mListMessageCash[position].text
+            holder.chatReceivedMessage.text = mListMessagesCache[position].text
             holder.chatReceivedMessageTime.text =
-                mListMessageCash[position].timeStamp.toString().asTime()
+                mListMessagesCache[position].timeStamp.toString().asTime()
         }
     }
 
-    override fun getItemCount(): Int = mListMessageCash.size
+    override fun getItemCount(): Int = mListMessagesCache.size
 
-
-
-    fun addItem(item:CommonModel,
-                toBottom:Boolean,
-                onSuccess:() ->Unit){
-        if (toBottom){
-            if (!mListMessageCash.contains(item)){
-                mListMessageCash.add(item)
-                notifyItemChanged(mListMessageCash.size)
-            } else{
-                if (!mListMessageCash.contains(item)){
-                    mListMessageCash.add(item)
-                    mListMessageCash.sortBy { it.timeStamp.toString() }
-                    notifyItemChanged(0)
-                }
-
-            }
+    fun addItemToBottom(item: CommonModel,
+                        onSuccess: () -> Unit){
+        if (!mListMessagesCache.contains(item)) {
+            mListMessagesCache.add(item)
+            notifyItemInserted(mListMessagesCache.size)
         }
         onSuccess()
-
     }
+
+    fun addItemToTop(item: CommonModel,
+                     onSuccess: () -> Unit){
+        if (!mListMessagesCache.contains(item)) {
+            mListMessagesCache.add(item)
+            mListMessagesCache.sortBy { it.timeStamp.toString() }
+            notifyItemInserted(0)
+        }
+        onSuccess()
+    }
+
+
 }
 
 
