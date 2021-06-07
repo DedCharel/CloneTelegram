@@ -1,5 +1,7 @@
 package com.example.telegram.ui.fragments.single_chat
 
+import android.app.Activity
+import android.content.Intent
 import android.view.View
 import android.widget.AbsListView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,7 +13,10 @@ import com.example.telegram.models.UserModel
 import com.example.telegram.ui.fragments.BaseFragment
 import com.example.telegram.utilits.*
 import com.google.firebase.database.DatabaseReference
+import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.activity_main.view.*
+import kotlinx.android.synthetic.main.fragment_settings.*
 import kotlinx.android.synthetic.main.fragment_single_chat.*
 import kotlinx.android.synthetic.main.toolbar_info.view.*
 
@@ -43,6 +48,24 @@ class SingleChatFragment(private val contact: CommonModel) : BaseFragment(R.layo
     private fun initFields() {
         mSwipeRefreshLayout = chat_swipe_refresh
         mLayoutManager = LinearLayoutManager(this.context)
+        chat_input_message.addTextChangedListener(AppTextWatcher{
+            val string =chat_input_message.text.toString()
+            if (string.isEmpty()){
+                chat_btn_send_message.visibility = View.GONE
+                chat_btn_attach.visibility = View.VISIBLE
+            }else{
+                chat_btn_send_message.visibility = View.VISIBLE
+                chat_btn_attach.visibility = View.GONE
+            }
+        })
+        chat_btn_attach.setOnClickListener { attachFile() }
+    }
+
+    private fun attachFile() {
+        CropImage.activity()
+            .setAspectRatio(1,1)
+            .setRequestedSize(250,250)
+            .start(APP_ACTIVITY, this)
     }
 
     private fun initRecycleView() {
@@ -133,6 +156,27 @@ class SingleChatFragment(private val contact: CommonModel) : BaseFragment(R.layo
 
         mToolbarInfo.toolbar_chat_status.text = mReceivingUser.state
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE
+            && resultCode == Activity.RESULT_OK && data != null){
+            val uri = CropImage.getActivityResult(data).uri
+            val messageKey = REF_DATABASE_ROOT.child(NODE_MESSAGES).child(CURRENT_UID)
+                .child(contact.id).push().key.toString()
+            val path = REF_STOREGE_ROOT.child(FOLDER_MESSAGE_IMAGE)
+                .child(messageKey)
+
+            putImageToStorage(uri,path){
+                getUrlFromStorage(path){
+                    setMessageAsImage(contact.id,it,messageKey)
+                }
+            }
+
+        }
+    }
+
+
 
     override fun onPause() {
         super.onPause()
