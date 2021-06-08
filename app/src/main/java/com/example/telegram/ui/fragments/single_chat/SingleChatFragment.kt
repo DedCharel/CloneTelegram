@@ -170,6 +170,7 @@ class SingleChatFragment(private val contact: CommonModel) : BaseFragment(R.layo
             putImageToStorage(uri,path){
                 getUrlFromStorage(path){
                     setMessageAsImage(contact.id,it,messageKey)
+                    mSmoothScrollToPosition = false
                 }
             }
 
