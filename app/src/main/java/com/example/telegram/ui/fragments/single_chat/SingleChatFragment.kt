@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.telegram.R
+import com.example.telegram.database.*
 import com.example.telegram.models.CommonModel
 import com.example.telegram.models.UserModel
 import com.example.telegram.ui.fragments.BaseFragment
@@ -85,7 +86,8 @@ class SingleChatFragment(private val contact: CommonModel) : BaseFragment(R.layo
                         chat_input_message.setText("")
                         chat_btn_voice.colorFilter = null
                         mAppVoiceRecorder.stopRecord{file, messageKey ->
-                            uploadFileToStorage(Uri.fromFile(file),messageKey)
+                            uploadFileToStorage(Uri.fromFile(file),messageKey,contact.id, TYPE_MESSAGE_VOICE)
+                            mSmoothScrollToPosition =true //опускаемся га последний элемент списка
                         }
                     }
                 }
@@ -200,15 +202,8 @@ class SingleChatFragment(private val contact: CommonModel) : BaseFragment(R.layo
             && resultCode == Activity.RESULT_OK && data != null){
             val uri = CropImage.getActivityResult(data).uri
             val messageKey = getMessageKey(contact.id)
-            val path = REF_STOREGE_ROOT.child(FOLDER_MESSAGE_IMAGE)
-                .child(messageKey)
-
-            putImageToStorage(uri,path){
-                getUrlFromStorage(path){
-                    setMessageAsImage(contact.id,it,messageKey)
-                    mSmoothScrollToPosition = false
-                }
-            }
+            uploadFileToStorage(uri,messageKey,contact.id, TYPE_MESSAGE_IMAGE)
+            mSmoothScrollToPosition =true //опускаемся га последний элемент списка
 
         }
     }

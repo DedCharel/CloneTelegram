@@ -9,7 +9,7 @@ import com.example.telegram.R
 import com.example.telegram.ui.fragments.ContactsFragment
 import com.example.telegram.ui.fragments.SettingsFragment
 import com.example.telegram.utilits.APP_ACTIVITY
-import com.example.telegram.utilits.USER
+import com.example.telegram.database.USER
 import com.example.telegram.utilits.downloadAndSetImage
 import com.example.telegram.utilits.replaceFragment
 import com.mikepenz.materialdrawer.AccountHeader

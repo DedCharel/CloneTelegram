@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.telegram.MainActivity
 import com.example.telegram.R
+import com.example.telegram.database.updatePhonesToDatabase
 import com.example.telegram.models.CommonModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_settings.*
