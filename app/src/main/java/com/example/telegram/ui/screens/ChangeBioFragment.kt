@@ -1,9 +1,8 @@
-package com.example.telegram.ui.fragments
+package com.example.telegram.ui.screens
 
 import com.example.telegram.R
 import com.example.telegram.database.USER
 import com.example.telegram.database.setBioToDatabase
-import com.example.telegram.utilits.*
 import kotlinx.android.synthetic.main.fragment_change_bio.*
 
 
