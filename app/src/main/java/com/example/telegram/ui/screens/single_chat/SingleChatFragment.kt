@@ -16,6 +16,7 @@ import com.example.telegram.models.CommonModel
 import com.example.telegram.models.UserModel
 import com.example.telegram.ui.screens.BaseFragment
 import com.example.telegram.ui.message_recycler_view.views.AppViewFactory
+import com.example.telegram.ui.screens.main_list.MainListFragment
 import com.example.telegram.ui.screens.settings.ChangeNameFragment
 import com.example.telegram.utilits.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -221,14 +222,14 @@ class SingleChatFragment(private val contact: CommonModel) : BaseFragment(R.layo
                     val uri = CropImage.getActivityResult(data).uri
                     val messageKey = getMessageKey(contact.id)
                     uploadFileToStorage(uri,messageKey,contact.id, TYPE_MESSAGE_IMAGE)
-                    mSmoothScrollToPosition =true //опускаемся га последний элемент списка
+                    mSmoothScrollToPosition =true //опускаемся на последний элемент списка
                 }
                 PICK_FILE_REQUEST_CODE -> {
                     val uri = data.data
                     val messageKey = getMessageKey(contact.id)
                     val filename = getFilenameFomUri(uri!!)
                     uploadFileToStorage(uri,messageKey,contact.id, TYPE_MESSAGE_FILE, filename)
-                    mSmoothScrollToPosition =true //опускаемся га последний элемент списка
+                    mSmoothScrollToPosition =true //опускаемся на последний элемент списка
                 }
             }
         }
@@ -260,13 +261,17 @@ class SingleChatFragment(private val contact: CommonModel) : BaseFragment(R.layo
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_clear_chat-> {
-
+            R.id.menu_clear_chat-> clearChat(contact.id){
+                showToast("Чат очищен")
+                replaceFragment(MainListFragment())
             }
-            R.id.menu_delete_chat-> {
-
+            R.id.menu_delete_chat-> deleteChat(contact.id){
+                showToast("Чат удален")
+                replaceFragment(MainListFragment())
             }
         }
         return true
     }
+
+
 }
