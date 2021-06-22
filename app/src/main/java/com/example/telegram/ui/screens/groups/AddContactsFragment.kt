@@ -1,22 +1,18 @@
-package com.example.telegram.ui.screens.main_list
+package com.example.telegram.ui.screens.groups
 
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.telegram.R
 import com.example.telegram.database.*
 import com.example.telegram.models.CommonModel
-import com.example.telegram.ui.screens.settings.ChangeNameFragment
 import com.example.telegram.utilits.*
 import kotlinx.android.synthetic.main.fragment_add_contacts.*
 import kotlinx.android.synthetic.main.fragment_main_list.*
 
 
-class MainListFragment : Fragment(R.layout.fragment_main_list) {
+class AddContactsFragment : Fragment(R.layout.fragment_add_contacts) {
     private lateinit var mRecyclerView: RecyclerView
-    private lateinit var mAdapter: MainListAdapter
+    private lateinit var mAdapter: AddContactsAdapter
     private val mRefMainList = REF_DATABASE_ROOT.child(NODE_MAIN_LIST).child(CURRENT_UID)
     private val mRefUsers = REF_DATABASE_ROOT.child(NODE_USERS)
     private val mRefMessage = REF_DATABASE_ROOT.child(NODE_MESSAGES).child(CURRENT_UID)
@@ -24,15 +20,21 @@ class MainListFragment : Fragment(R.layout.fragment_main_list) {
 
     override fun onResume() {
         super.onResume()
-        APP_ACTIVITY.title = "Telegram"
+        APP_ACTIVITY.title = "Добавить участника"
         APP_ACTIVITY.mAppDrawer.enableDrawer()
         hideKeyboard()
         initRecyclerView()
+        add_contacts_btn_next.setOnClickListener {
+           listContacts.forEach {
+               print(it.id)
+           }
+
+        }
     }
 
     private fun initRecyclerView() {
-        mRecyclerView = main_list_recycle_view
-        mAdapter = MainListAdapter()
+        mRecyclerView = add_contacts_recycle_view
+        mAdapter = AddContactsAdapter()
 
         //1 запрос
         mRefMainList.addListenerForSingleValueEvent(AppValueEventListener{ dataSnapshot ->
@@ -64,5 +66,8 @@ class MainListFragment : Fragment(R.layout.fragment_main_list) {
         mRecyclerView.adapter = mAdapter
     }
 
+    companion object{
+        val listContacts = mutableListOf<CommonModel>()
+    }
 
 }

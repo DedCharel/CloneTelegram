@@ -1,4 +1,4 @@
-package com.example.telegram.ui.screens
+package com.example.telegram.ui.screens.contacts
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.telegram.R
 import com.example.telegram.database.*
 import com.example.telegram.models.CommonModel
+import com.example.telegram.ui.screens.base.BaseFragment
 import com.example.telegram.ui.screens.single_chat.SingleChatFragment
 import com.example.telegram.utilits.*
 import com.firebase.ui.database.FirebaseRecyclerAdapter
@@ -20,7 +21,7 @@ import kotlinx.android.synthetic.main.fragment_contacts.*
 
 class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
     private lateinit var mRecycleView:RecyclerView
-    private lateinit var mAdapter: FirebaseRecyclerAdapter<CommonModel,ContactsHolder>
+    private lateinit var mAdapter: FirebaseRecyclerAdapter<CommonModel, ContactsHolder>
     private lateinit var mRefContacts:DatabaseReference
     private lateinit var mRefUsers:DatabaseReference
     private lateinit var mRefUsersListener:AppValueEventListener
@@ -41,7 +42,7 @@ class ContactsFragment : BaseFragment(R.layout.fragment_contacts) {
             .setQuery(mRefContacts,CommonModel::class.java)
             .build()
 
-        mAdapter = object :FirebaseRecyclerAdapter<CommonModel,ContactsHolder>(options){
+        mAdapter = object :FirebaseRecyclerAdapter<CommonModel, ContactsHolder>(options){
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactsHolder {
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.contact_item,parent,false)
                 return ContactsHolder(view)
