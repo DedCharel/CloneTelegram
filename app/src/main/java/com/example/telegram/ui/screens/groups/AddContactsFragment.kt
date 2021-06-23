@@ -25,9 +25,7 @@ class AddContactsFragment : Fragment(R.layout.fragment_add_contacts) {
         hideKeyboard()
         initRecyclerView()
         add_contacts_btn_next.setOnClickListener {
-           listContacts.forEach {
-               print(it.id)
-           }
+           replaceFragment(CreateGroupFragment(listContacts))
 
         }
     }
