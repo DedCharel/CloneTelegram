@@ -5,12 +5,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.telegram.R
 import com.example.telegram.database.*
 import com.example.telegram.models.CommonModel
+import com.example.telegram.ui.screens.base.BaseFragment
 import com.example.telegram.utilits.*
 import kotlinx.android.synthetic.main.fragment_add_contacts.*
 import kotlinx.android.synthetic.main.fragment_main_list.*
 
 
-class AddContactsFragment : Fragment(R.layout.fragment_add_contacts) {
+class AddContactsFragment : BaseFragment(R.layout.fragment_add_contacts) {
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mAdapter: AddContactsAdapter
     private val mRefMainList = REF_DATABASE_ROOT.child(NODE_MAIN_LIST).child(CURRENT_UID)
@@ -19,13 +20,14 @@ class AddContactsFragment : Fragment(R.layout.fragment_add_contacts) {
     private var mListItems = listOf<CommonModel>()
 
     override fun onResume() {
+        listContacts.clear()
         super.onResume()
         APP_ACTIVITY.title = "Добавить участника"
-        APP_ACTIVITY.mAppDrawer.enableDrawer()
         hideKeyboard()
         initRecyclerView()
         add_contacts_btn_next.setOnClickListener {
-           replaceFragment(CreateGroupFragment(listContacts))
+            if (listContacts.isEmpty()) showToast("Добавьте участника")
+            else replaceFragment(CreateGroupFragment(listContacts))
 
         }
     }
