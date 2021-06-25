@@ -1,6 +1,7 @@
 package com.example.telegram.database
 
 import android.net.Uri
+import android.text.Editable
 import com.example.telegram.R
 import com.example.telegram.models.CommonModel
 import com.example.telegram.models.UserModel
@@ -14,6 +15,7 @@ import com.google.firebase.database.ServerValue
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.io.File
+import java.net.URI
 
 fun initFirebase() {
     AUTH = FirebaseAuth.getInstance()
@@ -150,7 +152,13 @@ fun setNameToDatabase(fullname: String) {
         }.addOnFailureListener { showToast(it.message.toString()) }
 }
 
-fun setMessageAsFile(receivingUserID: String, fileUrl: String, messageKey: String, typeMessage: String, filename: String) {
+fun setMessageAsFile(
+    receivingUserID: String,
+    fileUrl: String,
+    messageKey: String,
+    typeMessage: String,
+    filename: String
+) {
     val refDialogUser = "$NODE_MESSAGES/$CURRENT_UID/$receivingUserID"
     val refDialogReceivingUser = "$NODE_MESSAGES/$receivingUserID/$CURRENT_UID"
 
@@ -174,7 +182,13 @@ fun setMessageAsFile(receivingUserID: String, fileUrl: String, messageKey: Strin
 fun getMessageKey(id: String) = REF_DATABASE_ROOT.child(NODE_MESSAGES).child(CURRENT_UID)
     .child(id).push().key.toString()
 
-fun uploadFileToStorage(uri: Uri, messageKey:String, receivedID:String, typeMessage:String, filename:String = "") {
+fun uploadFileToStorage(
+    uri: Uri,
+    messageKey: String,
+    receivedID: String,
+    typeMessage: String,
+    filename: String = ""
+) {
     showToast("record OK")
     val path = REF_STOREGE_ROOT.child(FOLDER_FILES).child(messageKey)
     putFileToStorage(uri, path) {
@@ -184,31 +198,32 @@ fun uploadFileToStorage(uri: Uri, messageKey:String, receivedID:String, typeMess
     }
 }
 
- fun getFileFromStorage(mFile: File, fileUrl: String, function: () -> Unit) {
+fun getFileFromStorage(mFile: File, fileUrl: String, function: () -> Unit) {
     val path = REF_STOREGE_ROOT.storage.getReferenceFromUrl(fileUrl)
     path.getFile(mFile)
         .addOnSuccessListener { function() }
         .addOnFailureListener { showToast(it.message.toString()) }
 }
- fun saveToMainList(id: String, type: String) {
+
+fun saveToMainList(id: String, type: String) {
     val refUser = "$NODE_MAIN_LIST/$CURRENT_UID/$id"
     val refReceived = "$NODE_MAIN_LIST/$id/$CURRENT_UID"
 
-     val mapUser = hashMapOf<String,Any>()
-     val mapReceived = hashMapOf<String,Any>()
+    val mapUser = hashMapOf<String, Any>()
+    val mapReceived = hashMapOf<String, Any>()
 
-     mapUser[CHILD_ID] = id
-     mapUser[CHILD_TYPE] = type
+    mapUser[CHILD_ID] = id
+    mapUser[CHILD_TYPE] = type
 
-     mapReceived[CHILD_ID] = CURRENT_UID
-     mapReceived[CHILD_TYPE] = type
+    mapReceived[CHILD_ID] = CURRENT_UID
+    mapReceived[CHILD_TYPE] = type
 
-     val commonMap = hashMapOf<String,Any>()
-     commonMap[refUser] = mapUser
-     commonMap[refReceived] = mapReceived
+    val commonMap = hashMapOf<String, Any>()
+    commonMap[refUser] = mapUser
+    commonMap[refReceived] = mapReceived
 
-     REF_DATABASE_ROOT.updateChildren(commonMap)
-         .addOnFailureListener { showToast(it.message.toString()) }
+    REF_DATABASE_ROOT.updateChildren(commonMap)
+        .addOnFailureListener { showToast(it.message.toString()) }
 
 }
 
@@ -230,4 +245,43 @@ fun clearChat(id: String, function: () -> Unit) {
                 .addOnSuccessListener { function() }
         }
 
+}
+
+fun createGroupToDatabase(
+    nameGroup: String,
+    uri: Uri,
+    listContacts: List<CommonModel>,
+    function: () -> Unit
+) {
+    val keyGroup = REF_DATABASE_ROOT.child(NODE_GROUPS).push().key.toString()
+    val path = REF_DATABASE_ROOT.child(NODE_GROUPS).child(keyGroup)
+    val pathStorage = REF_STOREGE_ROOT.child(FOLDER_GROUPS_IMAGE).child(keyGroup)
+
+    val mapData = hashMapOf<String, Any>()
+    mapData[CHILD_ID] = keyGroup
+    mapData[CHILD_FULLNAME] = nameGroup
+
+
+    val mapMembers = hashMapOf<String, Any>()
+    listContacts.forEach {
+        mapMembers[it.id] = USER_MEMBER
     }
+    mapMembers[CURRENT_UID] = USER_CREATOR
+
+    mapData[NODA_MEMBERS] = mapMembers
+
+    path.updateChildren(mapData)
+        .addOnSuccessListener {
+            function()
+            if (uri != Uri.EMPTY) {
+                putFileToStorage(uri, pathStorage) {
+                    getUrlFromStorage(pathStorage) {
+                        path.child(CHILD_FILE_URL).setValue(it)
+                    }
+                }
+            }
+        }
+        .addOnFailureListener { it.message.toString() }
+
+
+}
