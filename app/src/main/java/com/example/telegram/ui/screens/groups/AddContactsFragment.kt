@@ -1,6 +1,5 @@
 package com.example.telegram.ui.screens.groups
 
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.telegram.R
 import com.example.telegram.database.*
@@ -8,13 +7,12 @@ import com.example.telegram.models.CommonModel
 import com.example.telegram.ui.screens.base.BaseFragment
 import com.example.telegram.utilits.*
 import kotlinx.android.synthetic.main.fragment_add_contacts.*
-import kotlinx.android.synthetic.main.fragment_main_list.*
 
 
 class AddContactsFragment : BaseFragment(R.layout.fragment_add_contacts) {
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mAdapter: AddContactsAdapter
-    private val mRefMainList = REF_DATABASE_ROOT.child(NODE_MAIN_LIST).child(CURRENT_UID)
+    private val mRefContactsList = REF_DATABASE_ROOT.child(NODE_PHONES_CONTACTS).child(CURRENT_UID)
     private val mRefUsers = REF_DATABASE_ROOT.child(NODE_USERS)
     private val mRefMessage = REF_DATABASE_ROOT.child(NODE_MESSAGES).child(CURRENT_UID)
     private var mListItems = listOf<CommonModel>()
@@ -37,7 +35,7 @@ class AddContactsFragment : BaseFragment(R.layout.fragment_add_contacts) {
         mAdapter = AddContactsAdapter()
 
         //1 запрос
-        mRefMainList.addListenerForSingleValueEvent(AppValueEventListener{ dataSnapshot ->
+        mRefContactsList.addListenerForSingleValueEvent(AppValueEventListener{ dataSnapshot ->
             mListItems = dataSnapshot.children.map { it.getCommonModel() }
             mListItems.forEach{model ->
                 //2 запрос

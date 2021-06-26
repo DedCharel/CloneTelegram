@@ -1,16 +1,11 @@
 package com.example.telegram.ui.screens.main_list
 
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.telegram.R
 import com.example.telegram.database.*
 import com.example.telegram.models.CommonModel
-import com.example.telegram.ui.screens.settings.ChangeNameFragment
 import com.example.telegram.utilits.*
-import kotlinx.android.synthetic.main.fragment_add_contacts.*
 import kotlinx.android.synthetic.main.fragment_main_list.*
 
 
@@ -38,30 +33,57 @@ class MainListFragment : Fragment(R.layout.fragment_main_list) {
         mRefMainList.addListenerForSingleValueEvent(AppValueEventListener{ dataSnapshot ->
             mListItems = dataSnapshot.children.map { it.getCommonModel() }
             mListItems.forEach{model ->
-                //2 запрос
+                when (model.type){
+                    TYPE_CHAT -> shoeChat(model)
+                    TYPE_GROUP -> showGroup(model)
+                }
 
-                mRefUsers.child(model.id).addListenerForSingleValueEvent(AppValueEventListener{ dataSnapshot1 ->
-                    val newModel = dataSnapshot1.getCommonModel()
 
-                    //3 запрос
-                    mRefMessage.child(model.id).limitToLast(1)
-                        .addListenerForSingleValueEvent(AppValueEventListener{ dataSnapshot2 ->
-                            val tempList = dataSnapshot2.children.map { it.getCommonModel() }
-                            if(tempList.isEmpty()){
-                                newModel.lastMessage = "Чат пустой"
-                            }else{
-                                newModel.lastMessage = tempList[0].text
-                            }
-
-                            if (newModel.fullname.isEmpty()){
-                                newModel.fileUrl = newModel.phone
-                            }
-                            mAdapter.updateListItems(newModel)
-                        })
-                })
             }
         })
         mRecyclerView.adapter = mAdapter
+    }
+
+    private fun showGroup(model: CommonModel) {
+        //2 запрос
+        REF_DATABASE_ROOT.child(NODE_GROUPS).child(model.id).addListenerForSingleValueEvent(AppValueEventListener{ dataSnapshot1 ->
+            val newModel = dataSnapshot1.getCommonModel()
+
+            //3 запрос
+            REF_DATABASE_ROOT.child(NODE_GROUPS).child(model.id).child(NODE_MESSAGES).limitToLast(1)
+                .addListenerForSingleValueEvent(AppValueEventListener{ dataSnapshot2 ->
+                    val tempList = dataSnapshot2.children.map { it.getCommonModel() }
+                    if(tempList.isEmpty()){
+                        newModel.lastMessage = "Чат пустой"
+                    }else{
+                        newModel.lastMessage = tempList[0].text
+                    }
+                    mAdapter.updateListItems(newModel)
+                })
+        })
+    }
+
+    private fun shoeChat(model: CommonModel) {
+        //2 запрос
+        mRefUsers.child(model.id).addListenerForSingleValueEvent(AppValueEventListener{ dataSnapshot1 ->
+            val newModel = dataSnapshot1.getCommonModel()
+
+            //3 запрос
+            mRefMessage.child(model.id).limitToLast(1)
+                .addListenerForSingleValueEvent(AppValueEventListener{ dataSnapshot2 ->
+                    val tempList = dataSnapshot2.children.map { it.getCommonModel() }
+                    if(tempList.isEmpty()){
+                        newModel.lastMessage = "Чат пустой"
+                    }else{
+                        newModel.lastMessage = tempList[0].text
+                    }
+
+                    if (newModel.fullname.isEmpty()){
+                        newModel.fileUrl = newModel.phone
+                    }
+                    mAdapter.updateListItems(newModel)
+                })
+        })
     }
 
 
