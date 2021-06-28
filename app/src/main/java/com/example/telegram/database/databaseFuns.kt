@@ -314,3 +314,23 @@ fun addGroupsToMainList(
         .addOnSuccessListener { function() }
         .addOnFailureListener { showToast(it.message.toString()) }
 }
+
+fun sendMessageToGroup(message: String, groupID: String, typeText: String, function: () -> Unit) {
+
+    var refMessage = "$NODE_GROUPS/$groupID/$NODE_MESSAGES"
+    val messageKey = REF_DATABASE_ROOT.child(refMessage).push().key
+
+    val mapMessage = hashMapOf<String, Any>()
+    mapMessage[CHILD_FROM] = CURRENT_UID
+    mapMessage[CHILD_TYPE] = typeText
+    mapMessage[CHILD_TEXT] = message
+    mapMessage[CHILD_ID] = messageKey.toString()
+    mapMessage[CHILD_TIMESTAMP] = ServerValue.TIMESTAMP
+
+
+
+    REF_DATABASE_ROOT.child(refMessage).child(messageKey.toString())
+        .updateChildren(mapMessage)
+        .addOnSuccessListener { function() }
+        .addOnFailureListener { showToast(it.message.toString()) }
+}
